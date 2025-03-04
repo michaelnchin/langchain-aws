@@ -38,6 +38,8 @@ response = llm.invoke("Hello! How are you today?")
 print(response)
 ```
 
+xx
+
 For more detailed usage examples and documentation, please refer to the [LangChain docs](https://python.langchain.com/docs/integrations/platforms/aws/).
 
 ## Contributing
