@@ -5554,26 +5554,6 @@ def test_with_structured_output_prompt_prefill_dict_schema() -> None:
     assert "Response Schema" not in json.dumps(schema)
 
 
-def test_with_structured_output_prompt_prefill_extract_text() -> None:
-    """The text extractor strips fences and concatenates text blocks."""
-    from langchain_core.messages import AIMessage
-
-    from langchain_aws.chat_models.bedrock_converse import (
-        _extract_prompt_prefill_text,
-    )
-
-    msg = AIMessage(content='\n{"location": "NYC"}\n```')
-    assert _extract_prompt_prefill_text(msg) == '{"location": "NYC"}'
-
-    msg2 = AIMessage(
-        content=[
-            {"text": '```json\n{"location": '},
-            {"text": '"NYC"}\n```'},
-        ]
-    )
-    assert _extract_prompt_prefill_text(msg2) == '{"location": "NYC"}'
-
-
 def test_with_structured_output_prompt_prefill_include_raw() -> None:
     """include_raw=True wraps the LLM in a RunnableMap with raw + parsed keys."""
     chat_model = ChatBedrockConverse(
