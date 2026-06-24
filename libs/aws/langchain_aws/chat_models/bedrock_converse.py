@@ -803,6 +803,7 @@ class ChatBedrockConverse(BaseChatModel):
                         "claude-sonnet-4",
                         "claude-opus-4",
                         "claude-haiku-4",
+                        "claude-fable-5",
                     ]
                 )
             )
@@ -1007,6 +1008,7 @@ class ChatBedrockConverse(BaseChatModel):
                     "claude-sonnet-4",
                     "claude-opus-4",
                     "claude-haiku-4",
+                    "claude-fable-5",
                 )
                 thinking_params = self.additional_model_request_fields or {}
                 if any(
@@ -1342,6 +1344,7 @@ class ChatBedrockConverse(BaseChatModel):
             "claude-sonnet-4",
             "claude-opus-4",
             "claude-haiku-4",
+            "claude-fable-5",
         )
         if any(model in self._get_base_model() for model in thinking_claude_models):
             additional_context = (
@@ -1565,6 +1568,7 @@ class ChatBedrockConverse(BaseChatModel):
             "claude-sonnet-4",
             "claude-opus-4",
             "claude-haiku-4",
+            "claude-fable-5",
         )
         if tool_choice is None and any(
             model in self._get_base_model() for model in thinking_claude_models

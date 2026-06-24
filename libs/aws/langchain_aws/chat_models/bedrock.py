@@ -1361,6 +1361,7 @@ class ChatBedrock(BaseChatModel, BedrockBase):
                     "claude-opus-4-",
                     "claude-sonnet-4-",
                     "claude-haiku-4-",
+                    "claude-fable-5",
                 )
             ) and thinking_in_params(self.model_kwargs or {}):
                 forced = False
@@ -1552,6 +1553,7 @@ class ChatBedrock(BaseChatModel, BedrockBase):
                 "claude-opus-4-",
                 "claude-sonnet-4-",
                 "claude-haiku-4-",
+                "claude-fable-5",
             )
         ) and thinking_in_params(self.model_kwargs or {})
 

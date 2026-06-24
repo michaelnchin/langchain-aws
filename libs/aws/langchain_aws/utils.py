@@ -119,6 +119,7 @@ def count_tokens_api_supported_for_model(model: str) -> bool:
             "claude-opus-4-",
             "claude-sonnet-4-",
             "claude-haiku-4-",
+            "claude-fable-5",
         )
     )
 
