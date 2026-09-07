@@ -336,6 +336,7 @@ _PROFILES: dict[str, dict[str, Any]] = {
         "image_url_inputs": True,
         "pdf_tool_message": True,
         "image_tool_message": True,
+        "structured_output": True,
         "reasoning_effort_levels": [
             "low",
             "medium",
@@ -523,6 +524,7 @@ _PROFILES: dict[str, dict[str, Any]] = {
         "image_url_inputs": True,
         "pdf_tool_message": True,
         "image_tool_message": True,
+        "structured_output": True,
         "reasoning_effort_levels": [
             "low",
             "medium",
@@ -857,6 +859,7 @@ _PROFILES: dict[str, dict[str, Any]] = {
         "image_url_inputs": True,
         "pdf_tool_message": True,
         "image_tool_message": True,
+        "structured_output": True,
         "reasoning_effort_levels": [
             "low",
             "medium",
@@ -1141,6 +1144,7 @@ _PROFILES: dict[str, dict[str, Any]] = {
         "image_url_inputs": True,
         "pdf_tool_message": True,
         "image_tool_message": True,
+        "structured_output": True,
         "reasoning_effort_levels": [
             "low",
             "medium",
@@ -1476,6 +1480,7 @@ _PROFILES: dict[str, dict[str, Any]] = {
         "image_url_inputs": True,
         "pdf_tool_message": True,
         "image_tool_message": True,
+        "structured_output": True,
         "reasoning_effort_levels": [
             "low",
             "medium",
@@ -2834,6 +2839,7 @@ _PROFILES: dict[str, dict[str, Any]] = {
         "image_url_inputs": True,
         "pdf_tool_message": True,
         "image_tool_message": True,
+        "structured_output": True,
         "reasoning_effort_levels": [
             "low",
             "medium",
