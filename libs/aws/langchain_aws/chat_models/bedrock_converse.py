@@ -916,8 +916,8 @@ class ChatBedrockConverse(BaseChatModel):
                 )
             )
             or
-            # OpenAI gpt-oss models
-            (provider == "openai" and "gpt-oss" in model_id_lower)
+            # OpenAI GPT models (gpt-oss and native GPT-5.x/6.x)
+            (provider == "openai" and "gpt-" in model_id_lower)
             or
             # Cohere Command R models
             (provider == "cohere" and "command-r" in model_id_lower)
@@ -1153,6 +1153,8 @@ class ChatBedrockConverse(BaseChatModel):
                 else:
                     self.supports_tool_choice_values = ("auto", "any", "tool")
             elif "grok" in base_model:
+                self.supports_tool_choice_values = ("auto", "any", "tool")
+            elif base_model.startswith("openai.gpt-") and "gpt-oss" not in base_model:
                 self.supports_tool_choice_values = ("auto", "any", "tool")
             elif "llama4" in base_model:
                 self.supports_tool_choice_values = ("auto",)
