@@ -37,6 +37,7 @@ from pydantic import ConfigDict, Field, SecretStr, model_validator
 from typing_extensions import Self
 
 from langchain_aws._version import _add_langchain_aws_version, _tag_user_agent
+from langchain_aws.data._mantle_models import MANTLE_MODEL_PATHS
 from langchain_aws.data._profiles import _PROFILES
 from langchain_aws.utils import (
     _BEDROCK_API_KEY_MAX_TTL_SECONDS,
@@ -50,6 +51,8 @@ _MANTLE_BASE_URL_TEMPLATE = "https://bedrock-mantle.{region}.api.aws/v1"
 _MANTLE_OPENAI_BASE_URL_TEMPLATE = "https://bedrock-mantle.{region}.api.aws/openai/v1"
 # Served only on the ``/openai/v1`` passthrough (Chat Completions), per their AWS
 # model cards. On ``/v1`` they answer 400 "model isn't supported on this route".
+# Known models are looked up in ``MANTLE_MODEL_PATHS``; these prefixes cover
+# models released after it was last generated.
 _MANTLE_OPENAI_V1_CHAT_MODEL_PREFIXES = ("google.gemma-4", "xai.grok-4.")
 
 _MODEL_PROFILES = cast("ModelProfileRegistry", _PROFILES)
@@ -265,7 +268,12 @@ class ChatOpenAIMantle(BaseChatOpenAI):
         is_openai_gpt = model.startswith("openai.gpt-") and not model.startswith(
             "openai.gpt-oss"
         )
-        is_openai_v1_chat = model.startswith(_MANTLE_OPENAI_V1_CHAT_MODEL_PREFIXES)
+        if known_path := MANTLE_MODEL_PATHS.get(model):
+            serves_openai_v1 = known_path == "/openai/v1"
+        else:
+            serves_openai_v1 = is_openai_gpt or model.startswith(
+                _MANTLE_OPENAI_V1_CHAT_MODEL_PREFIXES
+            )
         if is_openai_gpt and values.get("use_responses_api") is None:
             values["use_responses_api"] = True
 
@@ -284,7 +292,7 @@ class ChatOpenAIMantle(BaseChatOpenAI):
                 raise ValueError(msg)
             template = (
                 _MANTLE_OPENAI_BASE_URL_TEMPLATE
-                if is_openai_gpt or is_openai_v1_chat
+                if serves_openai_v1
                 else _MANTLE_BASE_URL_TEMPLATE
             )
             values["base_url"] = template.format(region=region)

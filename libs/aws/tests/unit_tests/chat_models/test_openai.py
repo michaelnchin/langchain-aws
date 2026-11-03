@@ -14,6 +14,7 @@ from langchain_tests.unit_tests import ChatModelUnitTests
 from pydantic import BaseModel, SecretStr
 from pytest import MonkeyPatch
 
+import langchain_aws.chat_models.openai as openai_module
 from langchain_aws import ChatOpenAIMantle
 from langchain_aws.chat_models.openai import (
     MantleAPIContextOverflowError,
@@ -96,6 +97,38 @@ def test_default_base_url_route_by_model(model_name: str, expected_path: str) ->
         model.openai_api_base
         == f"https://bedrock-mantle.us-east-1.api.aws{expected_path}"
     )
+
+
+def _mantle(model: str) -> ChatOpenAIMantle:
+    return ChatOpenAIMantle(
+        model=model, region_name="us-east-1", bedrock_api_key=SecretStr("test-key")
+    )
+
+
+def test_default_base_url_from_mantle_model_paths(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A model's recorded base path wins over the prefix rules."""
+    monkeypatch.setattr(
+        openai_module,
+        "MANTLE_MODEL_PATHS",
+        {"acme.new-model": "/openai/v1", "google.gemma-4-moved": "/v1"},
+    )
+    base = "https://bedrock-mantle.us-east-1.api.aws"
+    assert _mantle("acme.new-model").openai_api_base == f"{base}/openai/v1"
+    assert _mantle("google.gemma-4-moved").openai_api_base == f"{base}/v1"
+    assert _mantle("acme.new-model").use_responses_api is None
+
+
+def test_prefix_routing_covers_models_missing_from_model_paths(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Models released after the data was generated still route by prefix."""
+    monkeypatch.setattr(openai_module, "MANTLE_MODEL_PATHS", {})
+    base = "https://bedrock-mantle.us-east-1.api.aws"
+    assert _mantle("google.gemma-4-new").openai_api_base == f"{base}/openai/v1"
+    assert _mantle("openai.gpt-7").openai_api_base == f"{base}/openai/v1"
+    assert _mantle("acme.other-model").openai_api_base == f"{base}/v1"
 
 
 @pytest.mark.parametrize(
